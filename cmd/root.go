@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"os"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -23,4 +25,15 @@ func Execute() {
 		logrus.Error(err)
 		os.Exit(1)
 	}
+}
+
+func init() {
+	cobra.OnInitialize(initConfig)
+}
+
+// initConfig reads in config file and ENV variables if set.
+func initConfig() {
+	viper.SetEnvPrefix("GENERATOR") // all xml-generator environment variables must be prefixed with GENERATOR_
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
+	viper.AutomaticEnv() // read in environment variables that match
 }
